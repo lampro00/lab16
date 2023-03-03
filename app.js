@@ -9,6 +9,7 @@ const csrf = require("csurf");
 const errorController = require("./controllers/error");
 const User = require("./models/user");
 const flash = require("connect-flash");
+
 const MONGODB_URI =
   "mongodb+srv://lampro00:anhtapro11@cluster0.wrrut84.mongodb.net/shop2";
 
@@ -61,9 +62,12 @@ app.use(authRoutes);
 app.use(errorController.get404);
 
 mongoose
-  .connect(MONGODB_URI)
+  .connect(MONGODB_URI, {
+    useNewUrlParser: true,
+    useUnifiedTopology: true,
+  })
   .then((result) => {
-    app.listen(3000);
+    app.listen(5000);
   })
   .catch((err) => {
     console.log(err);

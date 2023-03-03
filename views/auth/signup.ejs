@@ -1,28 +1,46 @@
 <%- include('../includes/head.ejs') %>
-    <link rel="stylesheet" href="/css/forms.css">
-    <link rel="stylesheet" href="/css/auth.css">
-</head>
 
 <body>
-   <%- include('../includes/navigation.ejs') %>
+  <%- include('../includes/navigation.ejs') %>
 
-    <main>
-        <form class="login-form" action="/signup" method="POST">
-
-            <div class="form-control">
-                <label for="email">E-Mail</label>
-                <input type="email" name="email" id="email">
-            </div>
-            <div class="form-control">
-                <label for="password">Password</label>
-                <input type="password" name="password" id="password">
-            </div>
-            <div class="form-control">
-                <label for="confirmPassword">Confirm Password</label>
-                <input type="password" name="confirmPassword" id="confirmPassword">
-            </div>
-            <input  type="hidden" name="_csrf" value="<%= csrfToken %>" />
-            <button class="btn" type="submit">Login</button>
-        </form>
-    </main>
-<%- include('../includes/end.ejs') %>
+  <main>
+    <% if (errorMessege) { %>
+    <div><%= errorMessege %></div>
+    <% } %>
+    <form class="login-form" action="/signup" method="POST" novalidate>
+      <div class="form-control">
+        <label for="email">E-Mail</label>
+        <input
+          class="<%= validatorerro.find( e => e.param ==='email')?'invalid' :''%>"
+          type="email"
+          name="email"
+          id="email"
+          value="<%=
+        oldinput.email%>"
+        />
+      </div>
+      <div class="form-control">
+        <label for="password">Password</label>
+        <input
+          class="<%= validatorerro.find( e => e.param ==='password')?'invalid' :''%>"
+          type="password"
+          name="password"
+          id="password"
+          value="<%= oldinput.password%>"
+        />
+      </div>
+      <div class="form-control">
+        <label for="confirmPassword">Confirm Password</label>
+        <input
+          class="<%= validatorerro.find( e => e.param ==='confirmPassword')?'invalid' :''%>"
+          type="password"
+          name="confirmPassword"
+          id="confirmPassword"
+        />
+      </div>
+      <input type="hidden" name="_csrf" value="<%= csrfToken %>" />
+      <button class="btn" type="submit">Login</button>
+    </form>
+  </main>
+  <%- include('../includes/end.ejs') %>
+</body>

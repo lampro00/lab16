@@ -1,10 +1,6 @@
 const Product = require("../models/product");
 const Order = require("../models/order");
-
 exports.getProducts = (req, res, next) => {
-  if (!req.session.isLoggedIn) {
-    return res.redirect("/login");
-  }
   Product.find()
     .then((products) => {
       console.log(products);
@@ -33,9 +29,6 @@ exports.getProduct = (req, res, next) => {
 };
 
 exports.getIndex = (req, res, next) => {
-  if (!req.session.isLoggedIn) {
-    return res.redirect("/login");
-  }
   Product.find()
     .then((products) => {
       res.render("shop/index", {
@@ -50,9 +43,6 @@ exports.getIndex = (req, res, next) => {
 };
 
 exports.getCart = (req, res, next) => {
-  if (!req.session.isLoggedIn) {
-    return res.redirect("/login");
-  }
   req.user
     .populate("cart.items.productId")
     .execPopulate()
