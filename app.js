@@ -60,7 +60,10 @@ app.use(shopRoutes);
 app.use(authRoutes);
 
 app.use(errorController.get404);
-
+app.use("/500", errorController.get404);
+app.use((error, req, res, next) => {
+  return res.redirect("/500");
+});
 mongoose
   .connect(MONGODB_URI, {
     useNewUrlParser: true,
