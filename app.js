@@ -9,12 +9,25 @@ const csrf = require("csurf");
 const errorController = require("./controllers/error");
 const User = require("./models/user");
 const flash = require("connect-flash");
-
+const multer = require("multer");
 const MONGODB_URI =
   "mongodb+srv://lampro00:anhtapro11@cluster0.wrrut84.mongodb.net/shop2";
 
 const app = express();
-
+const fileStorage = multer.diskStorage({
+  destination: (req, file, cb) => {
+    cb(null, "images");
+  },
+  filename: (req, file, cb) => {
+    cb(null, file.originalname + "_" + Date.now());
+  },
+});
+const fileFilter = (req, file, cb) => {
+  if (!file.originalname.match(/\.(jpg|jpeg|png|gif)$/)) {
+    cb(null, false);
+  }
+  cb(null, true);
+};
 const store = new MongoDBStore({
   uri: MONGODB_URI,
   collection: "sessions",
@@ -28,7 +41,11 @@ const shopRoutes = require("./routes/shop");
 const authRoutes = require("./routes/auth");
 
 app.use(bodyParser.urlencoded({ extended: false }));
+app.use(
+  multer({ storage: fileStorage, fileFilter: fileFilter }).single("image")
+);
 app.use(express.static(path.join(__dirname, "public")));
+app.use("/images", express.static(path.join(__dirname, "images")));
 app.use(
   session({
     secret: "my secret",
@@ -46,6 +63,7 @@ app.use((req, res, next) => {
   User.findById(req.session.user._id)
     .then((user) => {
       req.user = user;
+      console.log(req.user);
       next();
     })
     .catch((err) => console.log(err));
@@ -59,18 +77,18 @@ app.use("/admin", adminRoutes);
 app.use(shopRoutes);
 app.use(authRoutes);
 
+// app.use("/500", errorController.get500);
 app.use(errorController.get404);
-app.use("/500", errorController.get404);
-app.use((error, req, res, next) => {
-  return res.redirect("/500");
-});
+// app.use((error, req, res, next) => {
+//   return res.redirect("/500");
+// });
 mongoose
   .connect(MONGODB_URI, {
     useNewUrlParser: true,
     useUnifiedTopology: true,
   })
   .then((result) => {
-    app.listen(5000);
+    app.listen(3001);
   })
   .catch((err) => {
     console.log(err);
