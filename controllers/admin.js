@@ -184,11 +184,9 @@ exports.postDeleteProduct = (req, res, next) => {
     })
     .then(() => {
       console.log("DESTROYED PRODUCT");
-      res.redirect("/admin/products");
+      res.status(200).json({ message: "Success!" });
     })
     .catch((err) => {
-      const error = new Error(err);
-      error.httpStatuCode = 500;
-      next(error);
+      res.status(500).json({ message: "Deleting product failed." });
     });
 };
